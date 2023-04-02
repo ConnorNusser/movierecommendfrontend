@@ -4,10 +4,12 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { useContext, useRef } from 'react'
 import { UserContext } from './hooks/usercontext'
+import Router, { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const router = useRouter();
   const {value, setValue} = useContext(UserContext);
   const inputRef = useRef<any>(null);
 
@@ -17,7 +19,12 @@ export default function Home() {
       newVal = inputRef.current.value
 
     }
+    localStorage.setItem("name", newVal);
     setValue(newVal);
+  }
+  const handleLogOut = () => {
+    localStorage.removeItem("name");
+    window.location.reload();
   }
   return (
     <>
@@ -31,11 +38,13 @@ export default function Home() {
         <input
         ref = {inputRef}
         type = "text"/>
-        <button onClick={setNew}>set new contextValue</button>
+        <button onClick={setNew}>Login</button>
 
       </div>
       <main>
-        {value}
+        <div>
+          {value ? <div>Logged in as {value}<button onClick={handleLogOut}>LogOut </button></div> : null }
+        </div>
       </main>
     </>
   )
